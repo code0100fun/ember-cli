@@ -11,7 +11,8 @@ describe('Plugin Loader', function() {
   beforeEach(function() {
     pkg = {
       dependencies: {
-        'broccoli-emblem': 'latest'
+        'broccoli-emblem': 'latest',
+        'ember-cli-random': 'latest'
       },
       devDependencies: {
         'broccoli-sass': 'latest',
@@ -37,8 +38,8 @@ describe('Plugin Loader', function() {
     var plugins = registry.load('css');
 
     expect(plugins.length).to.equal(2);
-    expect(plugins[0].name).to.equal('broccoli-sass');
-    expect(plugins[1].name).to.equal('broccoli-ruby-sass');
+    expect(plugins[0].name).to.equal('broccoli-ruby-sass');
+    expect(plugins[1].name).to.equal('broccoli-sass');
   });
 
   it('returns plugin of the correct type', function() {
@@ -53,6 +54,14 @@ describe('Plugin Loader', function() {
     registry.add('template', 'broccoli-emblem');
     var plugins = registry.load('template');
     expect(plugins[0].name).to.equal('broccoli-emblem');
+  });
+
+  it('returns plugins in the order added', function() {
+    registry.add('template', 'broccoli-emblem');
+    registry.add('template', 'ember-cli-random');
+    var plugins = registry.load('template');
+    expect(plugins[0].name).to.equal('broccoli-emblem');
+    expect(plugins[1].name).to.equal('ember-cli-random');
   });
 
   it('returns null when no plugin available for type', function() {
@@ -115,7 +124,7 @@ describe('Plugin Loader', function() {
       registry.add('css', 'broccoli-foo', 'foo');
       var extensions = registry.extensionsForType('css');
 
-      expect(extensions).to.deep.equal(['css', 'foo', 'scss', 'sass']);
+      expect(extensions).to.deep.equal(['css', 'scss', 'sass', 'foo']);
     });
   });
 
